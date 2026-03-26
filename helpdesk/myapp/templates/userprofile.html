@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+```
+        <div class="card shadow-lg border-0 rounded-4">
+            
+            <!-- Header -->
+            <div class="card-header bg-primary text-white text-center rounded-top-4 py-4">
+                <h3 class="mb-0">User Profile</h3>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body p-4">
+
+                <!-- Welcome -->
+                <div class="mb-4 text-center">
+                    <h4>Welcome <strong>{{ user.username }}</strong></h4>
+                </div>
+
+                <hr>
+
+                <!-- Basic Info -->
+                <div class="mb-3">
+                    <label class="fw-bold">First Name:</label>
+                    <p class="text-muted">{{ user.first_name }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-bold">Last Name:</label>
+                    <p class="text-muted">{{ user.last_name }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-bold">Email:</label>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+
+                <hr>
+
+                <!-- Profile Info -->
+                {% if profile %}
+                    <div class="mb-3">
+                        <label class="fw-bold">Address:</label>
+                        <p class="text-muted">{{ profile.address }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">City:</label>
+                        <p class="text-muted">{{ profile.city }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">State:</label>
+                        <p class="text-muted">{{ profile.state }}</p>
+                    </div>
+                {% else %}
+                    <p class="text-danger text-center">Profile not created</p>
+                {% endif %}
+
+            </div>
+
+            <!-- Footer -->
+            <div class="card-footer text-center bg-light">
+
+                {% if profile.id %}
+                    <a href="{% url 'update_profile' profile.id %}" 
+                       class="btn btn-primary w-50 rounded-pill">
+                       Edit Profile
+                    </a>
+                {% else %}
+                    <a href="{% url 'create_profile' %}" 
+                       class="btn btn-warning w-50 rounded-pill">
+                       Complete Profile
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+```
+
+</div>
+
+{% endblock %}

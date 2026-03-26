@@ -1,0 +1,23 @@
+<form method="POST">
+    {% csrf_token %}
+
+    <h4>{{ user.username }}</h4>
+
+    <label>
+        <input type="checkbox" name="task_creator"
+        {% if user.groups.filter(name="task_creator").exists %}checked{% endif %}>
+        Task Creator
+    </label>
+    <br>
+
+    <label>
+        <input type="checkbox" name="worker"
+        {% if user.groups.filter(name="worker").exists %}checked{% endif %}>
+        Worker
+    </label>
+
+    <br><br>
+    <button class="btn btn-success">Save</button>
+</form>
+
+<a href="{% url 'manage_users' %}" class="btn btn-secondary mt-3">Back to User Management</a>

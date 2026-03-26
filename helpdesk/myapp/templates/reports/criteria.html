@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h4 class="mb-3">📊 Task Report</h4>
+
+<form method="get" class="card shadow p-3">
+
+<div class="row g-3">
+
+<div class="col-md-3">
+<label>User</label>
+<select name="user" class="form-select">
+<option value="all">ALL</option>
+{% for u in users %}
+<option value="{{ u.id }}">{{ u.username }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-3">
+<label>Status</label>
+<select name="status" class="form-select">
+<option value="all">ALL</option>
+<option value="new">New</option>
+<option value="in_progress">In Progress</option>
+<option value="completed">Completed</option>
+<option value="closed">Closed</option>
+</select>
+</div>
+
+<div class="col-md-3">
+<label>Ticket ID</label>
+<input type="text" name="ticket" class="form-control">
+</div>
+
+<div class="col-md-3">
+<label>Date Range</label>
+<input type="text" name="daterange" id="daterange" class="form-control">
+<input type="hidden" name="start_date">
+<input type="hidden" name="end_date">
+</div>
+
+</div>
+
+<hr>
+
+<div class="text-end">
+<button formaction="{% url 'report_view' %}" class="btn btn-primary">
+👁 View
+</button>
+
+<button formaction="{% url 'report_download' %}" class="btn btn-success">
+⬇ Download
+</button>
+</div>
+
+</form>
+
+{% endblock %}

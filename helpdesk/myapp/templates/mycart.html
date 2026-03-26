@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-3">
+        {% if request.user.is_staff %}Staff Task Cart{% else %}Your Task Cart{% endif %}
+    </h3>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Task ID</th>
+                <th>Title</th>
+                
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in cartitems %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.task_status|capfirst }}</td>
+                
+                <td>
+                    {% if request.user.is_staff %}
+                        {% if task.task_status == "approved" %}
+                            <a href="{% url 'accept_task' task.id %}" class="btn btn-success btn-sm">Mark In Progress</a>
+                        {% elif task.task_status == "in_progress" %}
+                            <a href="{% url 'mark_done' task.id %}" class="btn btn-secondary btn-sm">Mark Completed</a>
+                        {% elif task.task_status == "completed" %}
+                            <span class="badge bg-info text-dark">Completed</span>
+                        {% elif task.task_status == "closed" %}
+                            <span class="badge bg-success text-dark">Closed</span>
+                        {% endif %}
+                    {% else %}
+                        {% if task.task_status == "completed" %}
+                            <a href="{% url 'close_task' task.id %}" class="btn btn-success btn-sm">Mark Closed</a>
+                        {% elif task.task_status == "closed" %}
+                            <span class="badge bg-success text-dark">Closed</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">{{ task.task_status|capfirst }}</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No tasks to show</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

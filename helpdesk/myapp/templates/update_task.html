@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+    
+<div class="col-md-5 offset-md-4 mt-7">
+    <div class="card shadow-lg border-2">
+        <div class="card-body p-4"><br>
+            <h2 class="text-center mb-4 mt-7">Update Task</h2>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <a href="{% url 'base' %}" class="btn btn-primary mt-3">
+                     Go Back
+                </a>
+               
+                <button class="btn btn-primary mt-3" type="submit">
+                    Update
+                </button>
+                
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

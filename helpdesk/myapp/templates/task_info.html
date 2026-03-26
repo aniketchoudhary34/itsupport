@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-md-6 offset-md-3 mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+
+            <h3 class="text-center mb-4">
+                <i class="bi bi-info-circle-fill text-primary"></i> Task Information
+            </h3>
+
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th width="40%">Task ID</th>
+                        <td>{{ task.id }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Task Title</th>
+                        <td>{{ task.title }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Created By</th>
+                        <td>{{ task.created_by }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Closed By</th>
+                        <td>{{ task.closed_by }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Created On</th>
+                        <td>{{ task.created_on|date:"d M Y h:i A" }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Due Date</th>
+                        <td>{{ task.due_date|date:"d M Y" }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Reward</th>
+                        <td>{{ task.reward }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ task.description }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            <span class="badge bg-info text-dark">{{ task.task_status }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Document</th>
+                        <td>
+                            {% if task.excel_file %}
+                                <a href="{{ task.excel_file.url }}" class="btn btn-sm btn-outline-primary">
+                                    Download File
+                                </a>
+                            {% else %}
+                                No document uploaded.
+                            {% endif %}
+                      
+                        </td>
+                    </tr>  
+                    <tr>
+    <th>Assigned To</th>
+    <td>
+        {% if task.assigned_to %}
+            {{ task.assigned_to.username }}
+        {% else %}
+            <span class="text-muted">Not Assigned</span>
+        {% endif %}
+    </td>
+</tr>
+
+                </tbody>
+            </table>
+
+            <!-- ⭐ Go Back Button -->
+            <div class="text-center mt-3 mb-3">
+
+    <!-- Go Back: sabke liye -->
+    <a href="{% url 'base' %}" class="btn btn-primary px-4">
+        Go Back
+    </a>
+
+    <!-- ADMIN BUTTONS -->
+    {% if user.is_staff %}
+    {% if task.task_status|lower == "new" %}
+        <!-- Update button -->
+        <a href="{% url 'update_task' task.id %}" class="btn btn-warning px-4">
+            Update
+        </a>
+
+        <!-- Approve button -->
+        <a href="{% url 'accept_task' task.id %}" class="btn btn-success px-4">
+            Approve
+        </a>
+    {% endif %}
+
+    <!-- Delete button always visible to staff -->
+    <a href="{% url 'deletetask' task.id %}" class="btn btn-danger px-4">
+        Delete
+    </a>
+{% endif %}
+
+
+        <!-- NORMAL USER -->
+        {% if task.task_status|lower == "in progress" %}
+            <a href="{% url 'mark_done' task.id %}" class="btn btn-success px-4">
+                Mark Done
+            </a>
+        {% endif %}
+
+
+
+</div>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

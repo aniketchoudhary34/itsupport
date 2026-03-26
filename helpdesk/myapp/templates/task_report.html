@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h4 class="mb-3">Task Report</h4>
+
+    <div class="mb-3">
+        <a href="{% url 'report_criteria' %}" class="btn btn-secondary btn-sm">
+            Change Criteria
+        </a>
+
+        <a href="{% url 'report_download' %}?{{ request.GET.urlencode }}"
+           class="btn btn-success btn-sm ms-2">
+            Download Excel
+        </a>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Ticket ID</th>
+                <th>Title</th>
+                <th>User</th>
+                <th>Status</th>
+                <th>Created On</th>
+                <th>Due Date</th>
+                <th>Reward</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for t in tasks %}
+            <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.title }}</td>
+                <td>{{ t.created_by.username }}</td>
+                <td>{{ t.task_status }}</td>
+                <td>{{ t.created_on|date:"d-m-Y" }}</td>
+                <td>{{ t.due_date|date:"d-m-Y" }}</td>
+                <td>{{ t.reward }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-danger">
+                    No data found
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

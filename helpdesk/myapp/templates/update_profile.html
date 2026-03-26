@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Page</title>
+    
+</head>
+<body>
+    {% block content %}
+    <div class="col-4 offset-4">
+    <h1>Update Profile</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <br>
+        <button type="submit" class="btn btn-primary" >save</button>
+    </form>
+    </div>
+
+    {% endblock content %}
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}HelpDesk Dashboard{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Date Range Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+
+    <style>
+        body { background:#fafafa; }
+        .dashboard-card { border-radius:14px; cursor:pointer; transition:.2s; }
+        .dashboard-card:hover { transform: translateY(-3px); }
+        .table thead { background:#0d6efd; color:#fff; }
+        .badge { font-size:0.85rem; }
+
+        .form-select, .form-control {
+            border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,.08);
+        }
+    </style>
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<!-- 🔔 Messages -->
+<div class="container mt-3">
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+    {{ message }}
+    <button class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+</div>
+
+<div class="container-fluid mt-4">
+
+{% block content %}
+
+<!-- ================= TOP CARDS ================= -->
+<div class="row text-center mb-4">
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow" onclick="setStatus('new')">
+<div class="card-body">
+<i class="bi bi-plus-circle fs-2 text-primary"></i>
+<h6 class="mt-2">New</h6>
+<h3>{{ new_count }}</h3>
+</div></div></div>
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow" onclick="setStatus('in_progress')">
+<div class="card-body">
+<i class="bi bi-arrow-repeat fs-2 text-warning"></i>
+<h6 class="mt-2">In Progress</h6>
+<h3>{{ inprogress_count }}</h3>
+</div></div></div>
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow" onclick="setStatus('completed')">
+<div class="card-body">
+<i class="bi bi-check-circle fs-2 text-success"></i>
+<h6 class="mt-2">Completed</h6>
+<h3>{{ completed_count }}</h3>
+</div></div></div>
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow" onclick="setStatus('closed')">
+<div class="card-body">
+<i class="bi bi-lock fs-2 text-danger"></i>
+<h6 class="mt-2">Closed</h6>
+<h3>{{ closed_count }}</h3>
+</div></div></div>
+
+</div>
+
+<!-- ================= FILTER BAR ================= -->
+<div class="card shadow mb-3">
+<div class="card-body d-flex justify-content-between align-items-center">
+
+    <!-- STATUS DROPDOWN -->
+    <div style="width:200px">
+        <select id="statusFilter" class="form-select form-select-sm">
+            <option value="all">All</option>
+            <option value="new">New</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="closed">Closed</option>
+        </select>
+    </div>
+
+    <!-- SEARCH + DATE (RIGHT SIDE) -->
+    <div class="d-flex gap-2 align-items-center">
+        <input type="text" id="searchInput"
+               class="form-control form-control-sm"
+               style="width:180px"
+               placeholder="Search">
+
+        <input type="text" id="daterange"
+               class="form-control form-control-sm"
+               style="width:200px">
+    </div>
+
+</div>
+</div>
+
+
+<!-- ================= TASK TABLE ================= -->
+<div class="card shadow">
+<div class="card-body">
+
+<table class="table table-hover table-bordered align-middle" id="taskTable">
+<thead>
+<tr>
+<th>ID</th>
+<th>Title</th>
+<th>Created By</th>
+<th>Created On</th>
+<th>Due</th>
+<th>Reward</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for task in tasktedetas %}
+<tr data-status="{{ task.task_status }}"
+    data-date="{{ task.created_on|date:'Y-m-d' }}">
+
+<td>{{ task.id }}</td>
+<td class="fw-semibold">{{ task.title }}</td>
+<td>{{ task.created_by.username }}</td>
+<td>{{ task.created_on|date:"d M Y" }}</td>
+<td>{{ task.due_date|date:"d M Y" }}</td>
+<td>₹ {{ task.reward }}</td>
+
+<td>
+{% if task.task_status == "new" %}
+<span class="badge bg-primary">New</span>
+{% elif task.task_status == "in_progress" %}
+<span class="badge bg-warning text-dark">In Progress</span>
+{% elif task.task_status == "completed" %}
+<span class="badge bg-success">Completed</span>
+{% elif task.task_status == "closed" %}
+<span class="badge bg-danger">Closed</span>
+{% endif %}
+</td>
+
+<td>
+<a href="{% url 'task_info' task.id %}" class="btn btn-sm btn-outline-primary">View</a>
+</td>
+
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+{% endblock %}
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+<script>
+let currentStatus = "all";
+
+// dropdown filter
+document.getElementById("statusFilter").addEventListener("change", function () {
+    currentStatus = this.value;
+    filterTable();
+});
+
+// top cards click
+function setStatus(status){
+    document.getElementById("statusFilter").value = status;
+    currentStatus = status;
+    filterTable();
+}
+
+// search + status filter
+function filterTable(){
+    let search = document.getElementById("searchInput").value.toLowerCase();
+    let rows = document.querySelectorAll("#taskTable tbody tr");
+
+    rows.forEach(row=>{
+        let status = row.dataset.status;
+        let text = row.innerText.toLowerCase();
+
+        let show =
+            (currentStatus === "all" || status === currentStatus) &&
+            text.includes(search);
+
+        row.style.display = show ? "" : "none";
+    });
+}
+
+document.getElementById("searchInput").addEventListener("keyup", filterTable);
+
+// DATE RANGE
+$('#daterange').daterangepicker({
+    startDate: moment().subtract(6, 'days'),
+    endDate: moment(),
+    ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1,'days'), moment().subtract(1,'days')],
+        'Last 7 Days': [moment().subtract(6,'days'), moment()],
+        'Last 30 Days': [moment().subtract(29,'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [
+            moment().subtract(1,'month').startOf('month'),
+            moment().subtract(1,'month').endOf('month')
+        ]
+    }
+}, function(start, end) {
+    let rows = document.querySelectorAll("#taskTable tbody tr");
+    rows.forEach(row=>{
+        let rowDate = moment(row.dataset.date);
+        row.style.display = rowDate.isBetween(start, end, null, '[]') ? "" : "none";
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<table class="table table-bordered">
+<tr>
+    <th>Username</th>
+    <th>Role</th>
+    <th>Action</th>
+</tr>
+
+{% for user in users %}
+<tr>
+    <td>{{ user.username }}</td>
+    <td>
+        {% for g in user.groups.all %}
+            {{ g.name }}
+        {% empty %}
+            No Role
+        {% endfor %}
+    </td>
+    <td>
+        <a href="{% url 'update_user_role' user.id %}" class="btn btn-sm btn-primary">
+            Assign Role
+        </a>
+    </td>
+</tr>
+{% endfor %}
+</table>

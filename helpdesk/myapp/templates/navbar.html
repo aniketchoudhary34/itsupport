@@ -1,0 +1,78 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+
+    <a class="navbar-brand" href="#">HelpDesk</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <!-- ✅ UL REQUIRED -->
+      <ul class="navbar-nav me-auto">
+
+        {% if request.user.is_authenticated %}
+
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'base' %}">Dashboard</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'mycart' %}">My Cart</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_task' %}">Create Task</a>
+          </li>
+          <li class="nav-item">
+    <a class="nav-link" href="{% url 'report_criteria' %}">
+        <i class="bi bi-file-earmark-text"></i> Reports
+    </a>
+</li>
+
+
+          <!-- ✅ ADMIN ONLY -->
+          {% if request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link text-warning fw-bold" href="{% url 'user_list' %}">
+              Users
+            </a>
+          </li>
+          {% endif %}
+
+        {% endif %}
+      </ul>
+
+      <!-- ✅ RIGHT SIDE -->
+      <ul class="navbar-nav ms-auto">
+
+        {% if request.user.is_authenticated %}
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              {{ request.user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'user_profile' %}">User Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+          </li>
+
+        {% else %}
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+          </li>
+
+        {% endif %}
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
