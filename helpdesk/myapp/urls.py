@@ -41,7 +41,7 @@ urlpatterns=[
     path("report/criteria/", views.report_criteria, name="report_criteria"),
     path("reports/view/", views.report_view, name="report_view"),
     path("reports/download/", views.report_download, name="report_download"),
-
+    path("fetch-emails/", views.fetch_emails_view, name="fetch_emails"),
 
     ]
 if settings.DEBUG:

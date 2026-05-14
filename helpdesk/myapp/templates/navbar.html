@@ -14,32 +14,41 @@
 
         {% if request.user.is_authenticated %}
 
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'base' %}">Dashboard</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'base' %}">Dashboard</a>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'mycart' %}">My Cart</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'mycart' %}">My Cart</a>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'create_task' %}">Create Task</a>
-          </li>
-          <li class="nav-item">
-    <a class="nav-link" href="{% url 'report_criteria' %}">
-        <i class="bi bi-file-earmark-text"></i> Reports
-    </a>
-</li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'create_task' %}">Create Task</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'report_criteria' %}">
+            <i class="bi bi-file-earmark-text"></i> Reports
+          </a>
+        </li>
 
 
-          <!-- ✅ ADMIN ONLY -->
-          {% if request.user.is_staff %}
-          <li class="nav-item">
-            <a class="nav-link text-warning fw-bold" href="{% url 'user_list' %}">
-              Users
-            </a>
-          </li>
-          {% endif %}
+        <!-- ✅ ADMIN ONLY -->
+        {% if request.user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link text-warning fw-bold" href="{% url 'user_list' %}">
+
+            Users
+          </a>
+        <li class="nav-item me-3">
+
+          <button onclick="fetchEmails()" class="btn btn-warning btn-sm fw-bold">
+            <i class="bi bi-arrow-repeat"></i>
+            Refresh Emails
+          </button>
+
+        </li>
+        </li>
+        {% endif %}
 
         {% endif %}
       </ul>
@@ -49,25 +58,25 @@
 
         {% if request.user.is_authenticated %}
 
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-              {{ request.user.username }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="{% url 'user_profile' %}">User Profile</a></li>
-              <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-            </ul>
-          </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            {{ request.user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'user_profile' %}">User Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+          </ul>
+        </li>
 
         {% else %}
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Login</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'register' %}">Register</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'register' %}">Register</a>
+        </li>
 
         {% endif %}
 
@@ -76,3 +85,13 @@
     </div>
   </div>
 </nav>
+
+<script>
+  function fetchEmails() {
+    fetch("/fetch-emails/")
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message)
+      })
+  }
+</script>
